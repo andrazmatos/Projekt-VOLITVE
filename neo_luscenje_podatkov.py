@@ -2,7 +2,7 @@ import json
 import csv
 
 
-def neo_izlusci_podatke(leto):
+def neo_izlusci_podatke(leto, oblika):
     leto = str(leto)
 
     crna_lista = {
@@ -33,10 +33,10 @@ def neo_izlusci_podatke(leto):
         if i["knaz"] not in crna_lista[leto]:
             stranka = i["knaz"]
             id_stranke = i["st"]
-            procenti = i["prc"]
+            po_obliki_sortirani_podatki = i[oblika]
 
             legenda[stranka] = id_stranke
-            rezultati_cela_slovenija[str(id_stranke)] = procenti
+            rezultati_cela_slovenija[str(id_stranke)] = po_obliki_sortirani_podatki
 
     return leto, podatki, legenda, rezultati_cela_slovenija
 
@@ -94,11 +94,11 @@ def neo_zapis_podatkov(leto, legenda, rezultati_cela_slovenija, rez):
         )
 
 
-def neo_zapis_csv(leto, legenda, rez):
+def neo_zapis_csv(leto, legenda, rez, oblika):
     leto = str(leto)
 
     with open(
-        f"rezultati_{leto}_procenti.csv", "w", encoding="utf-8", newline=""
+        f"rezultati_{leto}_{oblika}.csv", "w", encoding="utf-8", newline=""
     ) as dat:
         tabela = csv.writer(dat)
 
@@ -106,5 +106,5 @@ def neo_zapis_csv(leto, legenda, rez):
 
         for key in rez:
             tabela.writerow(
-                [rez[key][0]] + [rez[key][i]["prc"] for i in range(1, len(rez[key]))]
+                [rez[key][0]] + [rez[key][i][oblika] for i in range(1, len(rez[key]))]
             )

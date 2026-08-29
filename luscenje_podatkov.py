@@ -37,7 +37,6 @@ def luscenje_podatkov(leto):
         # iz tabele izluščim vrstice, rad pa bi jih vse dal skupaj, ne pa obravnaval vsake posebej, zato bom uporabil re.findall, pri čemer obravnavam samo vsak teks znotraj značk <tr> in </tr>
 
         vrstice = re.findall(r"<tr[^>]*>(.*?)</tr>", table, flags=re.DOTALL)
-        
 
         okraji_neocisceni = re.findall(
             r"<t[dh][^>]*>(.*?)</t[dh]>",
@@ -66,7 +65,7 @@ def luscenje_podatkov(leto):
 
                 glasovi = int(vrednosti[0])
                 procent = float(vrednosti[1])
-                podatki[stranka][okraj] = {"glasovi": glasovi, "procent": procent}
+                podatki[stranka][okraj] = {"gl": glasovi, "prc": procent}
 
     podatki_koncni = {}
 
@@ -85,14 +84,14 @@ def luscenje_podatkov(leto):
 # sprememba v CSV
 
 
-def podatki_v_csv(leto):
+def podatki_v_csv(leto, oblika):
 
     okraji = naredi_okraje()
     podatki_koncni = luscenje_podatkov(leto)
     stranke = list(podatki_koncni.keys())
 
     with open(
-        f"rezultati{leto}_procenti.csv", "w", encoding="utf-8", newline=""
+        f"rezultati_{leto}_{oblika}.csv", "w", encoding="utf-8", newline=""
     ) as dat:
         pisec = csv.writer(dat)
         pisec.writerow(["OKRAJ"] + stranke)
@@ -101,11 +100,13 @@ def podatki_v_csv(leto):
             vrstica = [okraj]
 
             for stranka in stranke:
-                procent = podatki_koncni[stranka][okraj]["procent"]
-                delez = procent / 100
-                vrstica.append(round(delez, 4))
+                podatki_sortirani_po_obliki = podatki_koncni[stranka][okraj][oblika]
+                if oblika in "prc":
+                    delez = podatki_sortirani_po_obliki / 100
+                    vrstica.append(round(delez, 4))
+                else:
+                    vrstica.append(podatki_sortirani_po_obliki)
 
             pisec.writerow(vrstica)
 
-    return f"Preveri datoteko 'rezultati{leto}_procenti.csv'"
-
+    return f"Preveri datoteko 'rezultati{leto}_{oblika}.csv'"

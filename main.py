@@ -12,16 +12,20 @@ for leto in [2000, 2004, 2008, 2011, 2014]:
     povleci_podatke_s_spleta(leto)
 
 # podatke iz datotek za zgoraj našteta leta bomo najprej izluščili, nato pa še zapisali v obliko CSV
-for leto in [2000, 2004, 2008, 2011, 2014]:
-    luscenje_podatkov(leto)
-    podatki_v_csv(leto)
+for oblika in ["gl", "prc"]:
+    for leto in [2000, 2004, 2008, 2011, 2014]:
+        luscenje_podatkov(leto)
+        podatki_v_csv(leto, oblika)
 
 # priprava dokumentacije za leta 2018, 2022, 2026
-for leto in [2018, 2022, 2026]:
-    leto, podatki, legenda, rezultati_cela_slovenija = neo_izlusci_podatke(leto)
+for oblika in ["gl", "prc"]:
+    for leto in [2018, 2022, 2026]:
+        leto, podatki, legenda, rezultati_cela_slovenija = neo_izlusci_podatke(
+            leto, oblika
+        )
 
-    rez = neo_pripravi_rez(leto, podatki)
+        rez = neo_pripravi_rez(leto, podatki)
 
-    neo_zapis_podatkov(leto, legenda, rezultati_cela_slovenija, rez)
+        neo_zapis_podatkov(leto, legenda, rezultati_cela_slovenija, rez)
 
-    neo_zapis_csv(leto, legenda, rez)
+        neo_zapis_csv(leto, legenda, rez, oblika)
