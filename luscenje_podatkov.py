@@ -22,11 +22,29 @@ def ocisti_html(niz):
 
 
 def luscenje_podatkov(leto):
-    okraji_index = {"2000": 4, "2004": 8, "2008": 0, "2011": 0, "2014": 0}
-    vrstice_index = {"2000": 7, "2004": 11, "2008": 3, "2011": 3, "2014": 3}
+    okraji_index = {
+        "2000": 4,
+        "2004.5": 6,
+        "2004": 8,
+        "2008": 0,
+        "2009": 0,
+        "2011": 0,
+        "2014": 0,
+        "2014.5": 0,
+    }
+    vrstice_index = {
+        "2000": 7,
+        "2004.5": 9,
+        "2004": 11,
+        "2008": 3,
+        "2011": 3,
+        "2009": 3,
+        "2014": 3,
+        "2014.5": 3,
+    }
     podatki = {}
     okraji = naredi_okraje()
-    if leto not in [2000, 2004, 2008, 2011, 2014]:
+    if leto not in [2000, 2004, 2004.5, 2008, 2009, 2011, 2014, 2014.5]:
         return "Neveljavno leto. Državnozborske volitve so potekale leta 2000, 2004, 2008, 2011 in 2014."
 
     for enota in range(1, 9):
@@ -48,6 +66,8 @@ def luscenje_podatkov(leto):
             strankarski_rezultati = re.findall(
                 r"<t[dh][^>]*>(.*?)</t[dh]>", vrstica, flags=re.DOTALL
             )
+            if len(strankarski_rezultati) < 13:
+                continue
             stranka = ocisti_html(strankarski_rezultati[0])
             if stranka not in podatki:
                 podatki[stranka] = {}
